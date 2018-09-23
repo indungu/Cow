@@ -38,16 +38,18 @@ class LogIn(Resource):
     """A user can login"""
     def post(self):
         login_data = request.get_json()
-        # import pdb; pdb.set_trace()
         data, errors =  Loginschema.load(login_data)
         if errors:
             return(errors),400
         else:
-            Login_new_user = LogInUser(
-                data["username"],
-                data["password"]
+            if "username" in data.keys():
+                Login_new_user = LogInUser(
+                    username=data["username"],
+                    password=data["password"]
                 )
-        # import pdb; pdb.set_trace()
-        Login_new_user.logging_in_normal_user()
-
-
+            elif "email" in data.keys():
+                Login_new_user = LogInUser(
+                    email=data["email"],
+                    password=data["password"]
+                )
+        return Login_new_user.logging_in_normal_user()
